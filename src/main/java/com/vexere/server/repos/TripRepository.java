@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Repository
+@Component
 public interface TripRepository extends JpaRepository<Trip, Long>{
 
 }

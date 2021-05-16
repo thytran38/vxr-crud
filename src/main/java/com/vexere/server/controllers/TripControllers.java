@@ -6,31 +6,156 @@ import com.vexere.server.response.TripResponse;
 import com.vexere.server.service.TripService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.RestController;
 import java.lang.Iterable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
-import javax.xml.ws.Response;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @RequestMapping("/api")
 public class TripControllers {
 public static Logger logger = LoggerFactory.getLogger(TripControllers.class);
 
+    @Bean
+    public TripService tripService() {
+        return new TripService();
+    }
+
+    @Bean
+    public TripRepository tripRepository1(){return new TripRepository() {
+        @Override
+        public List<Trip> findAll() {
+            return null;
+        }
+
+        @Override
+        public List<Trip> findAll(Sort sort) {
+            return null;
+        }
+
+        @Override
+        public List<Trip> findAllById(Iterable<Long> longs) {
+            return null;
+        }
+
+        @Override
+        public <S extends Trip> List<S> saveAll(Iterable<S> entities) {
+            return null;
+        }
+
+        @Override
+        public void flush() {
+
+        }
+
+        @Override
+        public <S extends Trip> S saveAndFlush(S entity) {
+            return null;
+        }
+
+        @Override
+        public void deleteInBatch(Iterable<Trip> entities) {
+
+        }
+
+        @Override
+        public void deleteAllInBatch() {
+
+        }
+
+        @Override
+        public Trip getOne(Long aLong) {
+            return null;
+        }
+
+        @Override
+        public <S extends Trip> List<S> findAll(Example<S> example) {
+            return null;
+        }
+
+        @Override
+        public <S extends Trip> List<S> findAll(Example<S> example, Sort sort) {
+            return null;
+        }
+
+        @Override
+        public Page<Trip> findAll(Pageable pageable) {
+            return null;
+        }
+
+        @Override
+        public <S extends Trip> S save(S entity) {
+            return null;
+        }
+
+        @Override
+        public Optional<Trip> findById(Long aLong) {
+            return Optional.empty();
+        }
+
+        @Override
+        public boolean existsById(Long aLong) {
+            return false;
+        }
+
+        @Override
+        public long count() {
+            return 0;
+        }
+
+        @Override
+        public void deleteById(Long aLong) {
+
+        }
+
+        @Override
+        public void delete(Trip entity) {
+
+        }
+
+        @Override
+        public void deleteAll(Iterable<? extends Trip> entities) {
+
+        }
+
+        @Override
+        public void deleteAll() {
+
+        }
+
+        @Override
+        public <S extends Trip> Optional<S> findOne(Example<S> example) {
+            return Optional.empty();
+        }
+
+        @Override
+        public <S extends Trip> Page<S> findAll(Example<S> example, Pageable pageable) {
+            return null;
+        }
+
+        @Override
+        public <S extends Trip> long count(Example<S> example) {
+            return 0;
+        }
+
+        @Override
+        public <S extends Trip> boolean exists(Example<S> example) {
+            return false;
+        }
+    };}
+
     @Autowired
     private TripService tripService;
+
+
 
 //    @CrossOrigin
 //    @GetMapping
@@ -42,17 +167,32 @@ public static Logger logger = LoggerFactory.getLogger(TripControllers.class);
 //        return tripRepository.findAll();
 //    }
 
-    @RequestMapping(value = "/trips/", method = RequestMethod.GET)
-    public List<TripResponse> getAllTrips () {
+//    @RequestMapping(value = "/trips/", method = RequestMethod.GET)
+//    public List<TripResponse> getAllTrips () {
+//        List<Trip> tripList = tripService.getAllTrips();
+//        List<TripResponse> tripResponseList = new ArrayList<TripResponse>();
+//
+//
+//
+//            tripList.stream().forEach(trip -> {
+//                tripResponseList.add(new TripResponse(trip));
+//            });
+//
+//        return tripResponseList;
+//    }
+
+    @RequestMapping(value = "/trips2/", method = RequestMethod.GET)
+    public String getAllTrips () {
         List<Trip> tripList = tripService.getAllTrips();
         List<TripResponse> tripResponseList = new ArrayList<TripResponse>();
+        AtomicReference<String> data = new AtomicReference<>("");
 
 
-            tripList.stream().forEach(trip -> {
-                tripResponseList.add(new TripResponse(trip));
-            });
+        tripList.stream().forEach(trip -> {
+            data.updateAndGet(v -> v + new TripResponse(trip));
+        });
 
-        return tripResponseList;
+        return data.get();
     }
 
 //
