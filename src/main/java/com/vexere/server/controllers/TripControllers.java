@@ -50,13 +50,13 @@ public static Logger logger = LoggerFactory.getLogger(TripControllers.class);
     }
 //
     @CrossOrigin
-    @PostMapping("/trips")
+    @PostMapping("/trips/new")
     public Trip createTrip(@Valid @RequestBody Trip trip) {
         return tripService.createTrip(trip);
     }
 //
     @CrossOrigin
-    @PostMapping("bulkcreate")
+    @PostMapping("/trips/bulkcreate")
     public Iterable<Trip> createSeveralTrips(@Valid @RequestBody Iterable<Trip> trips){return tripService.createBulkTrips(trips);}
 //
 //    @CrossOrigin
