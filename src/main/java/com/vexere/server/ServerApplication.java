@@ -4,9 +4,10 @@ import com.vexere.server.repos.TripRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(scanBasePackages={"com.vexere.server.controllers","com.vexere.server.repos"})
-//@EnableJpaRepositories("com.vexere.server.repos")
+@EnableJpaRepositories("com.vexere.server.repos")
 public class ServerApplication {
 
 	public static void main(String[] args) {

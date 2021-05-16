@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 @Component
-public interface TripRepository extends JpaRepository<Trip, Long>{
+public interface TripRepository extends JpaRepository<Trip, Integer>{
 
 }
