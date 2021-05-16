@@ -55,9 +55,9 @@ public static Logger logger = LoggerFactory.getLogger(TripControllers.class);
         return tripService.createTrip(trip);
     }
 //
-//    @CrossOrigin
-//    @PostMapping("bulkcreate")
-//    public Iterable<Trip> createSeveralTrips(@Valid @RequestBody Iterable<Trip> trips){return tripRepository.saveAll(trips);}
+    @CrossOrigin
+    @PostMapping("bulkcreate")
+    public Iterable<Trip> createSeveralTrips(@Valid @RequestBody Iterable<Trip> trips){return tripService.createBulkTrips(trips);}
 //
 //    @CrossOrigin
 //    @PutMapping("/trips/{id}")
@@ -94,7 +94,20 @@ public static Logger logger = LoggerFactory.getLogger(TripControllers.class);
 //        final Trip updatedTrip = tripRepository.save(trip);
 //        return ResponseEntity.ok(updatedTrip);
 //    }
-//
+
+    @CrossOrigin
+    @PutMapping("/trips/{id}")
+    public ResponseEntity<Trip> updateTripSeatNumber(@PathVariable(value = "id") Integer tripID,
+                                                @Valid @RequestBody Trip tripDetails) throws ResourceNotFoundException {
+        Trip trip = tripService.findTripById(tripID)
+                .orElseThrow(() -> new ResourceNotFoundException("Trip not found for this id :: " + tripID));
+
+        trip.setSeatAvailable(tripDetails.getSeatAvailable());
+        final Trip updatedTrip = tripService.createTrip(trip);
+        return ResponseEntity.ok(updatedTrip);
+    }
+
+
 //    @CrossOrigin
 //    @DeleteMapping("/trips/{id}")
 //    public Map<String, Boolean> deleteTrip(@PathVariable(value="id") Long tripID) throws ResourceNotFoundException

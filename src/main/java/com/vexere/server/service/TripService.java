@@ -24,5 +24,5 @@ public class TripService {
     }
     public Optional<Trip> findTripById(@PathVariable(value = "id") Integer tripID){return tripRepository.findById(tripID);}
     public Trip createTrip(@Valid @RequestBody Trip trip){return tripRepository.save(trip);}
-
+    public Iterable<Trip> createBulkTrips(@Valid @RequestBody Iterable<Trip> trips){return tripRepository.saveAll(trips);}
 }
