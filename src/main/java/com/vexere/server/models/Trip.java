@@ -26,7 +26,6 @@ public class Trip implements Serializable {
     @Id
     @Column(name="TRIP_ID", nullable = false)
     public int tripId;
-
     public String tripName;
     public String departLoca;
     public String desLoca;

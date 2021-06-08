@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.lang.Iterable;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -24,21 +25,50 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api")
 public class TripControllers {
-public static Logger logger = LoggerFactory.getLogger(TripControllers.class);
+    public static Logger logger = LoggerFactory.getLogger(TripControllers.class);
+    @Autowired
+    private TripService tripService;
 
     @Bean
     public TripService tripService() {
         return new TripService();
     }
 
-    @Autowired
-    private TripService tripService;
+    @RequestMapping(value = "/allTrips", method = RequestMethod.GET)
+    public ArrayList<HashMap<String, String>> endPoint() {
+        List<Trip> listTripsOrigin = tripService.getAllTrips();
+        ArrayList<HashMap<String, String>> dataMap = new ArrayList<HashMap<String, String>>();
+        List<Trip> listTrips = new ArrayList<>();
+        Iterator<Trip> iterator = listTripsOrigin.iterator();
+        // Convert List<Trip> to ArrayList<Trip>
+        while (iterator.hasNext()) {
+            listTrips.add(iterator.next());
+        }
 
+        for (int i = 0; i < listTrips.size(); i++) {
+            HashMap<String, String> tmp = new HashMap<String, String>();
+            tmp.put("tripID", String.valueOf(listTrips.get(i).tripId));
+            tmp.put("tripName", String.valueOf(listTrips.get(i).tripName));
+            tmp.put("departLocation", String.valueOf(listTrips.get(i).departLoca));
+            tmp.put("desLoca", String.valueOf(listTrips.get(i).desLoca));
+            tmp.put("departStation", String.valueOf(listTrips.get(i).departStation));
+            tmp.put("busID", String.valueOf(listTrips.get(i).busId));
+            tmp.put("busBrand", String.valueOf(listTrips.get(i).busBrand));
+            tmp.put("seatAvailable", String.valueOf(listTrips.get(i).seatAvailable));
+            tmp.put("price", String.valueOf(listTrips.get(i).price));
+            tmp.put("startDatetime", String.valueOf(listTrips.get(i).startDatetime));
+            tmp.put("arrivalDatetime", String.valueOf(listTrips.get(i).arrivalDatetime));
 
-    @RequestMapping(value="/trips", method = RequestMethod.GET)
-    public List<Trip> getAllTrips(){return tripService.getAllTrips();}
+            dataMap.add(tmp);
+        }
+
+        return dataMap;
+
+    }
+//    public List<Trip> getAllTrips(){
+//        return tripService.getAllTrips();
+//    }
 
     @CrossOrigin
     @GetMapping("/trips/{id}")
@@ -48,16 +78,20 @@ public static Logger logger = LoggerFactory.getLogger(TripControllers.class);
                 .orElseThrow(() -> new ResourceNotFoundException("Trip not found for this id :: " + tripID));
         return ResponseEntity.ok().body(trip);
     }
-//
+
+    //
     @CrossOrigin
     @PostMapping("/trips/new")
     public Trip createTrip(@Valid @RequestBody Trip trip) {
         return tripService.createTrip(trip);
     }
-//
+
+    //
     @CrossOrigin
     @PostMapping("/trips/bulkcreate")
-    public Iterable<Trip> createSeveralTrips(@Valid @RequestBody Iterable<Trip> trips){return tripService.createBulkTrips(trips);}
+    public Iterable<Trip> createSeveralTrips(@Valid @RequestBody Iterable<Trip> trips) {
+        return tripService.createBulkTrips(trips);
+    }
 //
 //    @CrossOrigin
 //    @PutMapping("/trips/{id}")
@@ -98,7 +132,7 @@ public static Logger logger = LoggerFactory.getLogger(TripControllers.class);
     @CrossOrigin
     @PutMapping("/trips/{id}")
     public ResponseEntity<Trip> updateTripSeatNumber(@PathVariable(value = "id") Integer tripID,
-                                                @Valid @RequestBody Trip tripDetails) throws ResourceNotFoundException {
+                                                     @Valid @RequestBody Trip tripDetails) throws ResourceNotFoundException {
         Trip trip = tripService.findTripById(tripID)
                 .orElseThrow(() -> new ResourceNotFoundException("Trip not found for this id :: " + tripID));
 
@@ -108,17 +142,5 @@ public static Logger logger = LoggerFactory.getLogger(TripControllers.class);
     }
 
 
-//    @CrossOrigin
-//    @DeleteMapping("/trips/{id}")
-//    public Map<String, Boolean> deleteTrip(@PathVariable(value="id") Long tripID) throws ResourceNotFoundException
-//    {
-//        Trip trip = tripRepository.findById(tripID)
-//                .orElseThrow(() -> new ResourceNotFoundException("Trip not found for this id :: " + tripID));
-//
-//        tripRepository.delete(trip);
-//        Map<String, Boolean> response = new HashMap<>();
-//        response.put("Trip deleted", Boolean.TRUE);
-//        return response;
-//    }
 
 }
